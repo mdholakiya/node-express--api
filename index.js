@@ -1,28 +1,116 @@
 import express from "express";
 import bodyParser from "body-parser";
 import env from "dotenv";
-import {Pool,pg} from "pg";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import pg from "pg";
 import router from "./routes/user-rout.js";
+
+
 env.config();
 
-const pool = new Pool.Client ({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
-})
-pool.connect()
+const db = new pg.Client({
+    user: "postgres",
+    host: "localhost",
+    database: "apis",
+    password: "DESKTOP1",
+    port: 5432
+});
+db.connect();
+const sectet_key = "mansi1234"
 const app = express();
-const port = process.env.PORT || 4999;
+const port = 4999;
 
-app.use(bodyParser.urlencoded({extended:true}));
+
+//middleware
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
 
+//routs
+app.use("/home", router)
 
-// app.use(model)
-app.use("/user",router)
+app.post("/signup", async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(404).send("name email and password is require")
+    }
 
-app.listen(port,()=>{
+    try {
+        const result = await db.query("SELECT * FROM users WHERE email=$1", [email])
+        if (result.rows.length > 0) {
+            res.send("user already exist try to login")
+        }
+        else {
+            const hashpass = bcrypt.hash(password, 10)
+            await db.query("INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *", [name, email, hashpass]);
+            console.log(result.rows[0], "stored");
+            return res.status(200).json(result.rows[0]);
+        }
+    } catch (error) {
+        console.log("error", error);
+        return res.status(500).send("internal server error");
+    }
+})
+
+
+app.post("/login", async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+        return res.status(404).send(" email and password is require")
+    }
+    try {
+        const result = db.query('SELECT * FROM users WHERE email=$1 AND password=$2', [email, password])
+        if (isMatch) {
+            res.send("welcome to our page")
+        }
+        jwt.sign({ name, email, password }, sectet_key, { expiresIn: "60s" }, (err, token) => {
+            res.status(200).json({ token, name, email, password })
+            console.log({ email, password });
+        });
+    } catch (error) {
+        console.log("error", error);
+        return res.status(500).send("internal server error");
+    }
+})
+//to-do crup operation
+
+app.post("/toDo",(req, res) => {
+
+    const{name,email,password,phoneNo,age}=req.body;
+    console.log({city,age,phoneNo,age})
+    res.status(200).send({name,email,password,phoneNo,age});
+})
+
+app.post("/to-do", verifyUser, (req, res) => {
+    jwt.verify(req.token, sectet_key, (err, data) => {
+        if (err) {
+            res.send("authorization error,try to login")
+        } else {
+            res.json({ mess: "access", data })
+        }
+    })
+});
+
+app.post("/to-do", (req, res) => {
+
+})
+
+function verifyUser(req, res, next) {
+    const bearerHeader = req.headers["authorization"];
+    console.log(bearerHeader)
+    if (typeof bearerHeader !== "undefined") {
+        const bearer = bearerHeader.split(" ")
+        console.log(bearer);
+        const token = bearer[1];
+        req.token = token;
+        next();
+    }
+    else {
+        res.json("token expire")
+    }
+
+}
+
+app.listen(port, () => {
     console.log(`server connet with ${port}`)
 })
