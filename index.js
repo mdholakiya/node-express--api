@@ -41,18 +41,19 @@ app.post("/signup", async (req, res) => {
             res.send("user already exist try to login")
         }
         else {
-            const hashpass = await bcrypt.hash(password, 10)
-            const result = await db.query("INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *", [name, email, hashpass]);
+            const hashpass =await bcrypt.hash(password, 10)
+            console.log(hashpass)
+           const result= await db.query("INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *", [name, email, hashpass]);
             console.log(result.rows[0], "stored");
-            return res.status(200).send(result.rows[0]);
+
+            return res.status(200).json(result.rows[0]);
         }
     } catch (error) {
         console.log("error", error);
         return res.status(500).send("internal server error");
     }
 })
-
-
+//login
 app.post("/login", async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -61,7 +62,7 @@ app.post("/login", async (req, res) => {
     try {
         jwt.sign({ name, email, password }, sectet_key, { expiresIn: "300s" }, (err, token) => {
             res.status(200).json({ token, name, email, password })
-            console.log({ email, password });
+            console.log("add",{name, token,email, password });
         });
         // const result = db.query('SELECT * FROM users WHERE email=$1 AND password=$2', [email, hashpass])
         // const ischeck = await bcrypt.compare(password, hashpass);
@@ -90,21 +91,23 @@ app.post("/to-do", verifyUser, (req, res) => {
 });
 
 
-function verifyUser(req, res, next) {
-    const bearerHeader = req.headers["authorization"];
-    console.log(bearerHeader)
-    if (typeof bearerHeader !== "undefined") {
-        const bearer = bearerHeader.split(" ")
-        console.log(bearer);
-        const token = bearer[1];
-        req.token = token;
-        next();
-    }
-    else {
-        res.json("token expire")
+
+    function verifyUser(req, res, next) {
+        const bearerHeader = req.headers["authorization"];
+        console.log(bearerHeader)
+        if (typeof bearerHeader !== "undefined") {
+            const bearer = bearerHeader.split(" ")
+            console.log(bearer);
+            const token = bearer[1];
+            req.token = token;
+            next();
+        }
+        else {
+            res.json("token expire")
+        }
+    
     }
 
-}
 
 app.listen(port, () => {
     console.log(`server connet with ${port}`)
