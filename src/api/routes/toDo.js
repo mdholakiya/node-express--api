@@ -1,6 +1,6 @@
 import express from "express";
-import  verifyToken  from "../middleware/userMIddleWare.js";
-import { toDoDelete, todoLogin, toDoSignUp, toDoUpdate } from "../controller/todo-controller.js";
+import  verifyToken  from "../../middleware/userMiddleWare.js";
+import { toDoDelete, todoLogin, toDoSignUp, toDoUpdate } from "../controller/todo.js";
 
 const todorouter=express.Router();
 

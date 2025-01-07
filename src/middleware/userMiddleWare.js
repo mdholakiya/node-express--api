@@ -1,5 +1,5 @@
 import jwt, { decode } from "jsonwebtoken";
-import dotEnv from "../configs/env.js";
+import dotEnv from "../config/env.js";
 
 //jwt token
 function verifyToken(req, res, next) {

@@ -1,7 +1,7 @@
 // import {pg,pool} from "pg"
 // importpress"; express from "ex
-import db from "../configs/db.js"
-import dotEnv from "../configs/env.js"
+import db from "../../config/db.js";
+import dotEnv from "../../config/env.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {body,validationResult} from "express-validator";
