@@ -1,28 +1,29 @@
 import db from "../../config/db.js";
-import dotEnv from "../../config/env.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {body,validationResult} from "express-validator";
+import { getUserByEmail,insertTOData,updateToDoData,deleteToDoData } from "../../helper/toDoHelper.js";
 
+//signup
 const toDoSignUp=async(req, res) => {
     const {email}=req.body;
     // console.log(req.email);
-    const result=await db.query("SELECT * FROM users WHERE email=$1",[email])
-    if(email!==result.rows[0].email ||!email){
-        res.status(404).json({ message: " emiail is require ,enter you updated email " })
-    }else{
-        res.status(200).json({message:"welcome.... now you can edit your todo"})
-    }
-    
-}
+   const userByEmail= await getUserByEmail(email);
+       if(email!==userByEmail.email ||!email){
+           res.status(404).json({ message: " emiail is require ,enter you updated email " })
+       }else{
+           res.status(200).json({message:"welcome.... now you can edit your todo"})
+       }
+       
+   }
 
-//signup
+//login
 const todoLogin= async (req, res) => {
     const { email, city, age, contact } = req.body;
     // console.log(req.email)
-    const result=await db.query("SELECT * FROM users WHERE email=$1",[email])
-    console.log(result.rows[0].email)
-    if( !email || email!==result.rows[0].email){
+    const userByEmail= await getUserByEmail(email);
+    console.log(userByEmail.email)
+    if( !email || email!==userByEmail.email){
         res.status(400).json({mesage:" email field should not be empty ,enter valid and updated email "})
     }
     if ( !city || !age || !contact) {
@@ -34,12 +35,11 @@ const todoLogin= async (req, res) => {
     
     
     try {
-        const result = await db.query("INSERT INTO todo (cus_id,email,city,age,contat) VALUES ($1,$2,$3,$4,$5) RETURNING *",
-            [req.id, email, city, age, contact]);
+        const InsertData= await insertTOData(cus_id, email, city, age, contact)
         // console.log(result)
-        if (result.rows[0].email ===email) {
-            console.log(result.rows[0]);
-            return res.status(200).json({ data: result.rows[0], mesage: "data added successfully" })
+        if (userByEmail.email ===email) {
+            console.log(userByEmail);
+            return res.status(200).json({ data:InsertData, mesage: "data added successfully" })
         }
 
     } catch (error) {
@@ -54,15 +54,14 @@ const toDoUpdate =async (req, res) => {
     if ( !city && !age && !contact) {
         return res.status(404).send("enter atleast one filed to update details");
     }
-    const result=await db.query("SELECT * FROM users WHERE email=$1",[email])
-    if( !email || email!==result.rows[0].email){
+    const userByEmail= await getUserByEmail(email);
+    if( !email || email!==userByEmail.email){
         res.status(400).json({mesage:" email field should not be empty ,ennter valid email "})
     }
     
     try {
-        const result=await db.query("UPDATE todo SET email=$1, city=$2, age=$3, contat=$4 WHERE cus_id=$5 RETURNING *"
-            ,[req.email,city,age,contact,req.id]);
-            console.log( "data:",email,city,age,contact)
+        const updateData=await updateToDoData(email,city,age,contact,cus_id);
+            console.log( "data:",updateData)
                 res.status(200).json({ message: "updated",email,city,age,contact})
         
     } catch (error) {
@@ -73,16 +72,16 @@ const toDoUpdate =async (req, res) => {
 //delete
 const toDoDelete= async (req, res) => {
     const {email}=req.body;
-    const result=await db.query("SELECT * FROM users WHERE email=$1",[email])
-    if(!email ||email==!result.rows[0].email){
+    const userByEmail= await getUserByEmail(email);
+    if(!email ||email==!userByEmail.email){
         res.status(404).json({message:"enter updated email"})
     }
     try {
-        const result= await db.query("DELETE FROM todo WHERE cus_id=$1", [req.id]);
+        const deleteData=await deleteToDoData(cus_id);
         // if(!result.rows[0]){
         //     return res.status(404).json({message:"user not found,enter valid details"})
         // }
-        console.log("deleted");
+        console.log("deleted",deleteData);
         return res.status(200).json({ message: "deleted" })
     } catch (error) {
         res.status(500).json({ message: "internal server error,try to login" })

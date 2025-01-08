@@ -1,5 +1,6 @@
-import jwt, { decode } from "jsonwebtoken";
-import dotEnv from "../config/env.js";
+import jwt from "jsonwebtoken";
+import dotEnv from "../config/enviroment.js";
+// import env from 'dotenv'
 
 //jwt token
 function verifyToken(req, res, next) {
@@ -13,9 +14,9 @@ function verifyToken(req, res, next) {
         req.token = bearer;
         console.log(req.token);
 
-        const decoded = jwt.verify(req.token, dotEnv.SECRET_KEY);
-        req.id = decoded.id;
-        req.email = decoded.email;
+        const decoded = jwt.verify(req.token, dotEnv.S);
+          req.id = decoded.id;
+          req.email = decoded.email;
         console.log("decode token:", decoded)
         // console.log(userEmail, "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         next()

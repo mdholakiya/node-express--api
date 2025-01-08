@@ -1,13 +1,13 @@
 // import {pg,pool} from "pg"
 // importpress"; express from "ex
 import db from "../../config/db.js";
-import dotEnv from "../../config/env.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {body,validationResult} from "express-validator";
+import { getUserByEmail,insertUserData,updateUserData,deleteUserData } from "../../helper/userHelper.js";
 
-const passdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
-const contactRegex=/^[0-9]{10}$/;
+let passdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
+// const contactRegex=/^[0-9]{10}$/;
 
 //for demo
 const user = (req, res) => {
@@ -35,7 +35,7 @@ const user = (req, res) => {
         return res.status(404).json({mesage:"enter unique pass which include alterat one uper case,one lower case and one diggit"})
     }
     try {
-        const result = await db.query("SELECT * FROM users WHERE email=$1", [email]); 
+       const userByEmail= await getUserByEmail(email)
         console.log(result, "/////////////////////////////////")
         if (result.rows.length > 0) {
             return res.send("user already exist try to login")
@@ -43,7 +43,7 @@ const user = (req, res) => {
         else {
             const hashpass = await bcrypt.hash(password, 10);
             console.log(hashpass);
-            const result = await db.query("INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *", [name, email, hashpass]);
+            const insertUser =  await insertUserData(name,email,hashpass);
             console.log({ name, email, password }, "stored");
             return res.status(200).json({ name, email,password,message:"data added successfully",success:"true" });
         }
@@ -67,17 +67,17 @@ const userLOgin= async(req, res) => {
     }
 
     try {
-        const result = await db.query("SELECT * FROM users WHERE email=$1", [email])
+        const userByEmail= await getUserByEmail(email)
         if (result.rows.length === 0) {
             return res.status(400).json({ message: "user not found,enter correct email" })
         }
-        const isMatch = await bcrypt.compare(password, result.rows[0].password);
+        const isMatch = await bcrypt.compare(password, userByEmail.password);
         if (!isMatch) {
             return res.status(401).json({ message: "invalid password ,please try again" })
         }
         else{
 
-            jwt.sign ({ id: result.rows[0].id, email }, secret_key, { expiresIn: "1d" }, (err, token) => {
+            jwt.sign ({ id: userByEmail.id, email }, secret_key, { expiresIn: "1d" }, (err, token) => {
                console.log( "email:",email,"pass:", password,"toekn:", token);
                res.status(200).json({ token, email, password, message: "welcome to home page" });
            });
@@ -91,8 +91,8 @@ const userLOgin= async(req, res) => {
 
 //update
 const userUpdate=async(req, res) => {
-    const result=
-    console.log(result.rows[0],"llllllllllllllllllllllllllllllll")
+    const userByEmail = await getUserByEmail(email)
+    console.log(userByEmail,"llllllllllllllllllllllllllllllll")
     let { name, email, password } = req.body;
     if(!name && !email && !password){
         return res.status(404).json({message:"enter atleast one field for update "})
@@ -102,7 +102,7 @@ const userUpdate=async(req, res) => {
     }
     if (!name){
      // return res.status(400).json({ message: "Name cannot be empty" }
-        name=result.rows[0].name;
+        name=userByEmail.name;
     }
     if (password=="" ||!passdRegex.test(password)) {
         return res.status(400).json({ 
@@ -110,7 +110,7 @@ const userUpdate=async(req, res) => {
         });
       }
     if(!password){
-        password = result.rows[0].password
+        password = userByEmail.password
     }
 
     if (email && !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
@@ -124,8 +124,7 @@ const userUpdate=async(req, res) => {
         if(!password.includes("$")){
              hashpass = await bcrypt.hash(password, 10);
         }
-        const result = await db.query("UPDATE users SET name=$1,email=$2,password=$3 WHERE id=$4 RETURNING * ", [name, email, hashpass ==="" ? password : hashpass , req.id])
-
+        const updateUser =await updateUserData(name,email,password,cus_id)
         console.log(name, email, password,"updated users")
         return res.status(200).json({name, email, password, message: "uupdated stored" })
     } catch (error) {
@@ -136,14 +135,14 @@ const userUpdate=async(req, res) => {
 //delete
 const userDelete= async (req, res) => {
     const {email}=req.body;
-    const result=await db.query('SELECT * FROM users WHERE email=$1',[email])
+    const userByEmail= await getUserByEmail(email)
     req.email=email;
     console.log(req.email,"//////////////////////////////////")
-    if(email !==result.rows[0].email){
+    if(email !==userByEmail.email){
         res.status(400).json({message:"enter updated email"})
     }
     try {
-        const result = await db.query('DELETE FROM users WHERE id=$1', [req.id]);
+        const deleteUser = await deleteUserData(id)
         //    console.log(result.rows[0].id);
 
         res.status(200).json({ message: "user deleted successfully" })
