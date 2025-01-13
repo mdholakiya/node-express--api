@@ -2,8 +2,6 @@ import pg from "pg";
 // import env from 'dotenv'
 import dotEnv from "./enviroment.js";
 
-
-// env.config()
 // const db = new pg.Client({
 //   user:dotEnv.PG_USER,
 //   password: dotEnv.PG_PASSWORD,
@@ -21,14 +19,20 @@ import dotEnv from "./enviroment.js";
   // });
   // console.log(process.env,"env--------------");
   
-  const db = new pg.Client({
+const db = new pg.Client({
     user:dotEnv.USER,
     host:dotEnv.HOST,
     database:dotEnv.DATABASE,
     password:dotEnv.PASSWORD,
-    port:dotEnv.PORT
+    port:dotEnv.P_PORT
 });
 
-// db.connect();
-  
+db.connect(err => {
+  if(err){
+    console.log("Some error occured while connecting to the DB", err);
+  }else{
+    console.log("Db connected successfully");
+  } 
+}); 
+   
 export default db;

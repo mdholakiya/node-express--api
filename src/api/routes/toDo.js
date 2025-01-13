@@ -4,9 +4,12 @@ import { toDoDelete, todoLogin, toDoSignUp, toDoUpdate } from "../controller/tod
 
 const todorouter=express.Router();
 
-todorouter.get("/home",verifyToken,toDoSignUp);
-todorouter.post("/toDo",verifyToken,todoLogin);
-todorouter.patch("/upd",verifyToken,toDoUpdate);
-todorouter.delete("/del",verifyToken,toDoDelete);
+
+todorouter.use(verifyToken);
+
+todorouter.get("/data",toDoSignUp);
+todorouter.post("/add",todoLogin);
+todorouter.patch("/upd",toDoUpdate);
+todorouter.delete("/del",toDoDelete);
 
 export default todorouter;

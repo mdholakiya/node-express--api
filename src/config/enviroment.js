@@ -16,13 +16,15 @@ env.config();
 const dotEnv = {
       USER:process.env.PG_USER,
       HOST: process.env.PG_HOST,
-      DATABASE:process.env.PG_HOST,
+      DATABASE:process.env.PG_DATABASE,
       PASSWORD:process.env.PG_PASSWORD,
       P_PORT: process.env.PG_PORT,
-      PORT:process.env.PORT,
+      //serverport
+      PORT:process.env.SERVER_PORT,
+      //token secretkey
       SECRET:process.env.SECRET_KEY
   }
-  console.log(dotEnv, "frikuyfiikew------------");
-  
+  // console.log(dotEnv, "enviroment connected");
+   
 
 export default dotEnv;
