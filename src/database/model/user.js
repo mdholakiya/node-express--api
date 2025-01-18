@@ -25,8 +25,8 @@ const updateData = async (name,email,password, id) => {
   return result.rows[0]
   }
 
-const deleteData=async(cus_id)=>{
-  const result=await db.query("DELETE FROM users WHERE cus_id=$1" ,[cus_id]);
+const deleteData=async(id)=>{
+  const result=await db.query("DELETE FROM users WHERE id=$1" ,[id]);
   return result.rows[0]
 }
 export { checkData, postData, checkDataByIdEmail,updateData,deleteData,checkUserId }

@@ -38,30 +38,31 @@ describe("test user rout ", () => {
 
 });
 
-
-;
-
 //user signup
 describe("test user signup; rout", () => {
-  
-  
-  let client = db.query; 
-  beforeEach(() => {
-   
-    db.query = client
+   let details = {
+    name: "demo111",
+    email: "demo111@gmail.com",
+    password: "Demodemo111111"
+  }
+  beforeEach(async() => {
+    const result = await db.query(
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
+      [details.name, details.email, details.password]
+    );
+    details.userId = result.rows[0].id;
   });
-  afterEach(() => {
-    client = db.query;
+  
+  afterEach(async() => {
+    const result= await db.query('DELETE FROM users WHERE id = $1', [details.userId]);
   });
 
   it("should create new user and signup user ", async () => {
-    let details = {
-      name: "demo111",
-      email: "demo111@gmail.com",
-      password: "Demodemo111111"
-    }
-    // await db.query("INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", 
-    //   [details.name, details.email, "hashed_password"]);
+    // details = {
+    //   name: "demo111",
+    //   email: "demo111@gmail.com",
+    //   password: "Demodemo111111"
+    // }
     try {
       let res = await http.request.execute(app).post('/user/signup').send(details);
       // console.log(res.request,",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
@@ -71,7 +72,6 @@ describe("test user signup; rout", () => {
       // expect(res.body).to.have.property('password', details.password)
       expect(res.body).to.have.property('message', "user created successfully")
      
-
     const result = await db.query("SELECT * FROM users WHERE email=$1", [details.email]);
     expect(result.rows).to.have.lengthOf(1);
     expect(result.rows[0].email).to.equal(details.email)
@@ -80,28 +80,27 @@ describe("test user signup; rout", () => {
   } catch (error) {
       console.log("kkkkkkkkkkkkk",error,"somethig wrong with user signup")
   }
-
   
   });
 
 
-  // it("should return validation error if invalid or empty field", (done) => {
-  //   let details = {
-  //     name: "demo",//""//""
-  //     email: "",//wer@gmail.com"//""
-  //     password: "Demodemo1234" //""/""
-  //   }
-  //   done()
+  it("should return validation error if invalid or empty field", () => {
+    let details = {
+      name: "demo111",//""//""
+      email: "",//wer@gmail.com"//""
+      password: "Demodemo111111" //""/""
+    }
 
-  //   http.request.execute(app)
-  //     .post('/user/signup')
-  //     .send(details)
-  //     .end((err, res) => {
-  //       expect(res).to.have.status(403)
-  //       expect(res.body).to.have.property("err")
-  //       done();
-  //     });
-  // });
+    http.request.execute(app)
+      .post('/user/signup')
+      .send(details)
+      .end((err, res) => {
+        expect(res).to.have.status(403)
+        expect(res.body).to.have.property("err")
+        
+      });
+  });
+
 
    it("should return error if user already exist",async()=>{
     //for existing user
