@@ -1,15 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 // import bcrypt from "bcrypt";
-// import db from "../src/config/db.js";
+import db from "../src/config/db.js";
 import dotEnv from "../src/config/enviroment.js";
 // import env from 'dotenv'
 import userRouter from "../src/api/routes/user.js";
 import todorouter from "../src/api/routes/toDo.js";
 
 
-// const serverStart = () => {
-
+// const serverStart = () => 
     const app = express();
     const port = dotEnv.PORT;
     // console.log(port, "port---------");

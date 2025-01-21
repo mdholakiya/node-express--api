@@ -14,6 +14,7 @@ const user = (req, res) => {
 }
 
 //signup
+console.log("user/////////////////////////")
 const userSignUp = async (req, res) => {
     const { name, email, password } = req.body;
     const err = validationResult(req);
@@ -27,14 +28,13 @@ const userSignUp = async (req, res) => {
             return res.status(404).json({ mesage: "enter unique pass which include alterat one uper case,one lower case and one diggit" })
         }
         let user = await checkData(email);
-        // console.log(user)
         if (user) {
             return res.status(403).json({ message: "user already exist try to login" })
         }
         else {
             const hashpass = await bcrypt.hash(password, 10);
             let newUser = await postData(name, email, hashpass)
-            console.log(newUser, "stored");
+            // console.log(newUser, "stored");
             return res.status(200).json({ newUser, message: "user created successfully", });
         }
 
@@ -52,7 +52,6 @@ const userLOgin = async (req, res) => {
         return res.status(400).json({ err: err.array() });
     }
     const user = await checkData(email)
-    console.log(user, "kkkkkkkkkkkkkkkkkkk")
     try {
         if (!user || email !== user.email) {
             return res.status(400).json({ message: "user not found,enter valid email" })

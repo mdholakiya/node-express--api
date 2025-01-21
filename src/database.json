@@ -1,0 +1,11 @@
+{
+    "development": {
+      "driver": "pg",
+      "user": "postgres",
+      "password": "DESKTOP1",
+      "host": "localhost",
+      "database": "test",
+      "port": 5432
+    }
+}
+  

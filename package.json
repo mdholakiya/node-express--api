@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "mocha  ./src/test/**/*.js"
+    "test": "mocha ./src/test/**/*.js"
   },
   "author": "mansi",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
+    "db-migrate": "^0.11.14",
+    "db-migrate-pg": "^1.5.2",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
