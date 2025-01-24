@@ -7,6 +7,8 @@ import dotEnv from "../src/config/enviroment.js";
 import userRouter from "../src/api/routes/user.js";
 import todorouter from "../src/api/routes/toDo.js";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerDoc from  "./swagger/swagger.json" with {type:'json'}
 
 // const serverStart = () => 
     const app = express();
@@ -19,6 +21,8 @@ import todorouter from "../src/api/routes/toDo.js";
     //routs
     app.use("/user", userRouter);
     app.use("/toDo", todorouter);
+
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
     // //connection
     app.listen(port, (error) => {

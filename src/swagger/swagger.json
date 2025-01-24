@@ -1,0 +1,600 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "USER/TO-DO CRUP OPERATION",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter 'Bearer' followed by a space and then your token. Example: 'Bearer abc123'"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/user/": {
+      "get": {
+        "description": "welcome message",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "message": "welcome to user page"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "description": "signup user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "test"
+                },
+                "email": {
+                  "example": "test@gmail.com"
+                },
+                "password": {
+                  "example": "Test2345"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "newUser": {
+                  "id": "auto generate from db",
+                  "name": "test",
+                  "email": "test@gmail.com",
+                  "password": "Test2345"
+                },
+                "message": "user created successfully"
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "examples": {
+              "application/json": {
+                "message": "user already exist try to login"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "examples": {
+              "application/json": {
+                "password error": "enter unique pass which include alterat one uper case,one lower case and one diggit",
+                "name error": "Name is required & password lenth should be atleast 8 char",
+                "email error": "enter valid email address"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "examples": {
+              "application/json": {
+                "message": "internal server error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "welcome to home page",
+                "token": "token from on the basis of user id and email",
+                "user": {
+                  "id": "auto generate from db",
+                  "name": "test",
+                  "email": "test@gmail.com",
+                  "password": "Test2345"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "message": "user not found,enter valid email"
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized",
+            "examples": {
+              "application/json": {
+                "password message": "invalid password,try again ,enter valid password"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "examples": {
+              "application/json": {
+                "message": "internal server error"
+              }
+            }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "/user/data": {
+      "get": {
+        "description": "get data",
+        "parameters": [
+          {
+            "description": "The ID of the user to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "Here is your details"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "12345"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "any"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "user@example.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "example": "Userty678"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User not found.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "User not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "An error occurred."
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "/user/update": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "updateName"
+                },
+                "email": {
+                  "example": "update@gmail.com"
+                },
+                "password": {
+                  "example": "Update234"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "updateUser": {
+                  "id": "user id",
+                  "name": "updateName",
+                  "email": "update@gmail.com",
+                  "password": "Update234"
+                },
+                " message": "updated stored"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "message1": "Enter a valid email address",
+                "message2": "enter atleast one field for update ",
+                "message3": "enter valid name"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "examples": {
+              "application/json": {
+                "message": "internal server error"
+              }
+            }
+          },
+          "security": [
+            {
+              "Bearer": []
+            }
+          ]
+        }
+      }
+    },
+    "/user/delete": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "update@gmail.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "user deleted successfully"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "message": "enter updated email"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "examples": {
+              "application/json": {
+                "message": "data not deleted",
+                "error": "error"
+              }
+            }
+          },
+          "security": [
+            {
+              "Bearer": []
+            }
+          ]
+        }
+      }
+    },
+    "/toDo/add": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "update@gmail.com"
+                },
+                "title": {
+                  "example": "Add task"
+                },
+                "discription": {
+                  "example": "Add discription"
+                },
+                "contact": {
+                  "example": "1234567890"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "message": "data added successfully",
+                "examples": {
+                  "email": "update@gmail.com",
+                  "contact": "Add task",
+                  "title": "Add task",
+                  "discription": "Add discription"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "examples": {
+              "application/json": {
+                "message": "todo item already exist"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "examples": {
+              "application/json": {
+                "message1": " email field should not be empty ,enter valid and updated email ",
+                "message2": " fillup all the fields for add details",
+                "message3": "contact shold be 10 digit only ex:+91 1234567891 "
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "examples": {
+              "application/json": {
+                "message": "internal server error",
+                "error": "error"
+              }
+            }
+          },
+          "security": [
+            {
+              "Bearer": []
+            }
+          ]
+        }
+      }
+    },
+    "/toDo/data": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Created",
+            "examples": {
+              "application/json": {
+                "message": "here is your all todo items",
+                "todo": {
+                  "email": "update@gmail.com",
+                  "contact": "4567890123",
+                  "title": " title",
+                  "discription": "discription"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "examples": {
+              "application/json": {
+                "message":" email is require ,enter you updated email "
+            }
+          },
+          "security": [
+            {
+              "Bearer": []
+            }
+          ]
+        }
+      }
+    }
+  },
+  "/toDo/upd": {
+    "patch": {
+      "description": "",
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "example": "update@gmail.com"
+              },
+              "contact": {
+                "example": "2345678901"
+              },
+              "title": {
+                "example": "updated title"
+              },
+              "discription": {
+                "example": "updated discription"
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "OK",
+          "examples": {
+            "application/json": {
+              "message": "updated",
+              "todoUpdate": {
+                "email": "update@gmail.com",
+                "contact": "updated contact",
+                "title": "  updated title",
+                "discription": " updated discription"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Bad Request",
+          "examples": {
+            "application/json": {
+              "message1":" email field should not be empty ,ennter valid email ",
+              "message2":"User not authorized to update this todo."
+          }
+        }
+        },
+        "404": {
+          "description": "Not Found",
+          "examples": {
+            "application/json": {
+              "message":"atleast one field is requuire to update details"
+          }
+        }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "examples": {
+            "application/json": {
+              "message": "internal servar error"
+          }
+        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "/toDo/del": {
+    "delete": {
+      "description": "",
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "example": "update@gmail.com"
+              }
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "OK",
+          "examples": {
+            "application/json": {
+              "message":"deleted" 
+          }
+        }
+        },
+        "404": {
+          "description": "Not Found",
+          "examples": {
+            "application/json": {
+              "message": "enter updated email"  
+          }
+        }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "examples": {
+            "application/json": {
+              "message":"internal server error,try to login" 
+          }
+        }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  }
+}
+}

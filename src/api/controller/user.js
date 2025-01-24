@@ -11,7 +11,7 @@ let emailREgex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 //for user home page
 const user = (req, res) => {
-    console.log("homepage")
+   // console.log("homepage")
     res.status(200).json({ message: "welcome to user page" })
 }
 
@@ -52,7 +52,7 @@ const userLOgin = async (req, res) => {
     const { email, password } = req.body;
     const err = validationResult(req);
     if (!err.isEmpty()) {
-        return res.status(400).json({ err: err.array() });
+        return res.status(404).json({ err: err.array() });
     }
     const user = await checkData(email)
     try {
@@ -61,7 +61,7 @@ const userLOgin = async (req, res) => {
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "invalid password,try again ,enter valid password" })
+            return res.status(403).json({ message: "invalid password,try again ,enter valid password" })
         }
         else {
 
@@ -79,17 +79,19 @@ const userLOgin = async (req, res) => {
 };
 //get user
 const getUser = async (req, res) => {
-    let { email } = req.body;
+    // let { id } = req.body;
+    // let { email } = req.query;
     try {
-        let user = await checkDataByIdEmail(req.id, email)
-        if (email === user.email && user.id == req.id) {
+        let user = await checkUserId(req.id)
+        let id=user.id
+        if (id==req.id ) {
             res.status(200).json({ message: "here is your  details", user })
         }
-        else if (email !== user.email) {
-            res.status(403).json({ message: "enter valid email,email is require" })
+        else {
+            res.status(403).json({ message: "user not found" })
         }
     } catch (error) {
-        res.status(404).json(error)
+        res.status(500).json(error)
     }
 }
 

@@ -13,10 +13,10 @@ const todoLogin = async (req, res) => {
         const user =await userById(req.id)
        
         if (!email || email !== user.email) {
-            res.status(400).json({ mesage: " email field should not be empty ,enter valid and updated email " })
+            res.status(404).json({ mesage: " email field should not be empty ,enter valid and updated email " })
         }
         if (!title || !discription || !contact) {
-             res.status(400).send(" fillup all the fields for add details");
+             res.status(404).send(" fillup all the fields for add details");
         }
         if (contact && !contactRegex.test(contact)) {
             res.status(404).json({ message: "contact shold be 10 digit only ex:+91 1234567891 " })
@@ -31,26 +31,27 @@ const todoLogin = async (req, res) => {
             }
                 if(todo.title ==title){
                     console.log("todo item already exist")
-                    return res.status(400).json({message:"todo item already exist"})
+                    return res.status(403).json({message:"todo item already exist"})
             }
         }
         
     } catch (error) {
-        res.status(500).json(error)
+        res.status(500).json({message:"internal server error",error})
     }
 
 }
 
 //get todo data
 const toDoGet = async (req, res) => {
-    const { email } = req.body;
+    // const { email } = req.body;
     const user=await userById(req.id)
-    if (email !== user.email || !email) {
+    const todo=await dataById(user.id)
+    // let cusId=todo.cus_id
+    if (todo) {
        // console.log("error")
-        res.status(404).json({ message: " emiail is require ,enter you updated email ", })
+       res.status(200).json({message: "here is your all todo items",todo })
     } else {
-        const todo=await dataById(user.id)
-        res.status(200).json({message: "here is your all todo items",todo })
+        res.status(404).json({ message: " email is require ,enter you updated email " })
     }
 
 }
@@ -65,7 +66,7 @@ const toDoUpdate = async (req, res) => {
         
 
         if (!email || email !== user.email) {
-            res.status(400).json({ mesage: " email field should not be empty ,ennter valid email " })
+            res.status(403).json({ mesage: " email field should not be empty ,ennter valid email " })
         }
         if (!title && !discription && !contact) {
             res.status(404).json({ message: "atleast one field is requuire to update details" });
