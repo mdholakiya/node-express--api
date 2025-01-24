@@ -13,8 +13,8 @@ import todorouter from "../src/api/routes/toDo.js";
     const port = dotEnv.PORT;
     // console.log(port, "port---------");
     //middleware
-    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(express.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
     //routs
     app.use("/user", userRouter);

@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from "express-validator";
+// import { signUpValidation } from '../../helper/validators/userValidation.js';
 import dotEnv from "../../config/enviroment.js";
 import { checkData, checkDataByIdEmail, checkUserId, deleteData, postData, updateData } from "../../database/model/user.js";
+import { signUpValidation,loginVAlidation } from '../../helper/validators/userValidation.js';
 
 let passdRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/
 let emailREgex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -14,18 +16,19 @@ const user = (req, res) => {
 }
 
 //signup
-console.log("user/////////////////////////")
 const userSignUp = async (req, res) => {
     const { name, email, password } = req.body;
     const err = validationResult(req);
     if (!err.isEmpty()) {
-        console.log(err.array())
-        return res.status(403).json({ err: err.array() });
+        // console.log(err.array(),"kkkkkkkkkkkkkk")
+        return res.status(404).json({ err: err.array() });
     }
     try {
+        //SIMULATE ERROR FOR 500 CODE TEST CASE
+        if (req.body.simulateError){ throw new Error('Simulated error'); }
 
         if (!passdRegex.test(password)) {
-            return res.status(404).json({ mesage: "enter unique pass which include alterat one uper case,one lower case and one diggit" })
+            return res.status(404).json({ message: "enter unique pass which include alterat one uper case,one lower case and one diggit" })
         }
         let user = await checkData(email);
         if (user) {
@@ -39,8 +42,8 @@ const userSignUp = async (req, res) => {
         }
 
     } catch (error) {
-        console.log("error", error);
-        res.status(500).json({ message: "internal server error", sucess: "false" });
+        // console.log("error", error);
+        res.status(500).json({ message: "internal server error", success: "false" ,});
     }
 };
 
@@ -64,7 +67,7 @@ const userLOgin = async (req, res) => {
 
             jwt.sign({ id: user.id, email }, dotEnv.SECRET, { expiresIn: "2d", }, (err, token) => {
 
-                console.log("email:", email, "id:", user.id, "token:", token);
+               // console.log("email:", email, "id:", user.id, "token:", token);
                 res.status(200).json({ message: "welcome to home page", token, user });
             });
         }
@@ -117,8 +120,8 @@ const userUpdate = async (req, res) => {
         if (password) newPass = await bcrypt.hash(password, 10)
 
         const updateUser = await updateData(newName, newEmail, newPass || password, req.id)
-        console.log(updateUser, "updated users");
-        return res.status(201).json({ updateUser, message: "updated stored" })
+       // console.log(updateUser, "updated users");
+        return res.status(200).json({ updateUser, message: "updated stored" })
     } catch (error) {
         return res.status(500).json({ error: error, message: "internal server error" })
     }

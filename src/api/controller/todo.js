@@ -26,7 +26,7 @@ const todoLogin = async (req, res) => {
             if(!todo){
                 let todoPost=await postData(user.id,user.email,contact,title,discription)
                 // let todoUser = todo.rows[0]
-                console.log( email,contact,title,discription, "added");
+               // console.log( email,contact,title,discription, "added");
                 return res.status(200).json({message: "data added successfully",email,contact,title,discription })
             }
                 if(todo.title ==title){
@@ -46,7 +46,7 @@ const toDoGet = async (req, res) => {
     const { email } = req.body;
     const user=await userById(req.id)
     if (email !== user.email || !email) {
-        console.log("error")
+       // console.log("error")
         res.status(404).json({ message: " emiail is require ,enter you updated email ", })
     } else {
         const todo=await dataById(user.id)
@@ -94,7 +94,7 @@ const toDoDelete = async (req, res) => {
     }else{
 
         const data = deleteData(user.id);
-        console.log("deleted", data);
+        //console.log("deleted", data);
         return res.status(200).json({ message: "deleted" })
     }
     } catch (error) {

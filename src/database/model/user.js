@@ -7,6 +7,7 @@ const checkData = async (email) => {
 }
 
 const checkUserId = async (id) => {
+  console.log(checkData,"lllllllllllllllllllllllllllll")
   const result = await db.query("SELECT * FROM users WHERE id=$1 ", [id]);
   return result.rows[0]
 }
@@ -17,6 +18,7 @@ const checkDataByIdEmail = async (id,email) => {
 
 const postData = async (name, email, password) => {
   const result = await db.query("INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING *", [name, email, password]);
+  // console.log(result.rows[0])
   return result.rows[0]
 }
 

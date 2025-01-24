@@ -12,9 +12,9 @@ function verifyToken( req, res, next) {
         const bearer = bearerHeader.split(" ")[1]
         // console.log(bearer, "----------------------------------");
         req.token = bearer;
-        console.log(req.token);
+//console.log(req.token);
             const decoded = jwt.verify(req.token, dotEnv.SECRET);
-            console.log("decode token:", decoded)
+           // console.log("decode token:", decoded)
             req.id = decoded.id;
             req.email = decoded.email;
             // console.log(userEmail, "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
