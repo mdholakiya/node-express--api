@@ -4,8 +4,8 @@
       "user": "postgres",
       "password": "DESKTOP1",
       "host": "localhost",
-      "database": "test",
-      "port": 5432
+      "database": "API",
+      "port": "5432"
     }
 }
   
