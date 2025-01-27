@@ -19,6 +19,7 @@ import swaggerDoc from  "./swagger/swagger.json" with {type:'json'}
     app.use(bodyParser.urlencoded({ extended: true }));
 
     //routs
+
     app.use("/user", userRouter);
     app.use("/toDo", todorouter);
 

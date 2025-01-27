@@ -16,6 +16,7 @@ const user = (req, res) => {
 }
 
 //signup
+
 const userSignUp = async (req, res) => {
     const { name, email, password } = req.body;
     const err = validationResult(req);
