@@ -1,5 +1,5 @@
 {
     "version":2,
-    "builds":[{"src":"src/server.js" , "use":"@vercel/node"}],
-    "routes":[{"src" :"/(.*)" , "dest" :"src/server.js"}]
+    "builds":[{"src":"NODE-EXPRESS--API/src/server.js" , "use":"@vercel/node"}],
+    "routes":[{"src" :"/(.*)" , "dest" :"NODE-EXPRESS--API/src/server.js"}]
 }
