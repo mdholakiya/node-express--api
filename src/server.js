@@ -33,5 +33,4 @@ import swaggerDoc from  "./swagger/swagger.json" with {type:'json'}
             console.log(`server is listen on ${port}`)
         }
     })
-export  {app,port};
 
