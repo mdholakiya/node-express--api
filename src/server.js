@@ -10,10 +10,10 @@ import todorouter from "../src/api/routes/toDo.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerDoc from  "./swagger/swagger.json" with {type:'json'}
 
-// const serverStart = () => 
+
     const app = express();
     const port = dotEnv.PORT;
-    // console.log(port, "port---------");
+
     //middleware
     app.use(express.json());
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,7 +33,5 @@ import swaggerDoc from  "./swagger/swagger.json" with {type:'json'}
             console.log(`server is listen on ${port}`)
         }
     })
-
-// };
 export  {app,port};
 
