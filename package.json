@@ -5,9 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon ./src/server.js",
-    "test": "mocha ./src/test/**/*.js",
-    "generateDoc": "node ./src/swagger/swager.js"
+    "start": "nodemon src/server.js",
+    "test": "mocha src/test/**/*.js",
+    "generateDoc": "node src/swagger/swager.js"
   },
   "author": "mansi",
   "license": "ISC",
