@@ -35,9 +35,8 @@ import dotEnv from "./enviroment.js";
 const db = new pg.Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized:true,
-  },
- // connectionTimeoutMillis: 10000, 
+    rejectUnauthorized:false,
+  }
 });
 
 
